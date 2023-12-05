@@ -1,4 +1,4 @@
-from typing import Iterable, Sequence
+from typing import Any, Iterable, Sequence
 from clingo import Model, Function, String
 from clingo.ast import ProgramBuilder, parse_string
 from clingo.control import Control
@@ -139,11 +139,12 @@ class Explainer():
             for expl_model in it:
                 yield expl_model
 
-    def get_xclingo_models(self, model:Model) -> Iterable[Explanation]:
+    def get_xclingo_models(self, model:Model, print_messages=False) -> Iterable[Explanation]:
         control = self._initialize_control()
         self.clean_log()
         self._ground(control, model)
-        self.print_messages()
+        if print_messages:
+            self.print_messages()
         return self._get_models(control)
 
     def explain(self, model:Model, context=None) -> Iterable[Explanation]:
@@ -155,11 +156,23 @@ class Explainer():
 
 
 class XclingoControl:
-    def __init__(self, n_solutions='1', n_explanations='1', auto_trace='none'):
+    def __init__(
+            self, 
+            n_solutions='1', 
+            n_explanations='1', 
+            auto_trace='none', 
+            arguments: Sequence[str] = [],
+            logger: Any | None = None,
+            message_limit: int = 20
+        ):
         self.n_solutions = n_solutions
         self.n_explanations = n_explanations
 
-        self.control = Control([n_solutions if type(n_solutions)==str else str(n_solutions)])
+        self.control = Control(
+            [n_solutions if type(n_solutions)==str else str(n_solutions)]+arguments, 
+            logger=logger,
+            message_limit=message_limit
+            )
         self.explainer = Explainer(
             [
                 n_explanations if type(n_explanations)==str else str(n_explanations), 
