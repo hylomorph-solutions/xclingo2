@@ -53,7 +53,7 @@ class Explainer():
                 return
             if '_xclingo_show_trace' in msg:
                 self._no_show_trace = True
-        print(msg)
+        # print(msg)
 
     def print_messages(self):
         if self._no_labels:
@@ -143,15 +143,15 @@ class Explainer():
         control = self._initialize_control()
         self.clean_log()
         self._ground(control, model)
-        if print_messages:
-            self.print_messages()
+        # if print_messages:
+        #     self.print_messages()
         return self._get_models(control)
 
     def explain(self, model:Model, context=None) -> Iterable[Explanation]:
         control = self._initialize_control()    
         self.clean_log()
         self._ground(control, model, context)
-        self.print_messages()
+        # self.print_messages()
         return self._get_explanations(control)
 
 
